@@ -21,7 +21,14 @@
     "lib": [
       "es2020",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@interfaces": ["src/app/common/interfaces/index.ts"],
+      "@types": ["src/app/common/types/index.ts"],
+      "@services": ["src/app/services/index.ts"],
+      "@errorHandlers": ["src/app/common/errorHandler/index.ts"],
+      "@guards": ["src/app/common/guards/index.ts"],
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

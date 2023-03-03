@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import {IUserBackend} from "../../common/interfaces/backend/User";
-import {Observable, of, throwError} from "rxjs";
-import {IUser, IUserLoginResponse} from "../../common/interfaces/frontend/User";
-import {TUser} from "../../common/types/User";
-import {Header} from "../../common/interfaces/header";
+import { Observable, of, throwError } from "rxjs";
+import { IUser, IUserLoginResponse, IUserBackend, Header } from "@interfaces";
+import { TUser } from "@types";
 
 @Injectable({
   providedIn: 'root'
@@ -14,16 +12,23 @@ export class BackendService {
     this.users.set('Jack', {
       id: 21351,
       name: 'Jack',
-      creationDate: '',
+      creationDate: '1677834846759',
       role: 'admin',
-      expirationDate: ''
+      expirationDate: null
     })
     this.users.set('Bob', {
       id: Math.floor(Math.random() * 1_000_000),
       name: 'Bob',
-      creationDate: '',
+      creationDate: '1677831818769',
       role: 'admin',
-      expirationDate: ''
+      expirationDate: null
+    })
+    this.users.set('Dan', {
+      id: Math.floor(Math.random() * 1_000_000),
+      name: 'Dan',
+      creationDate: '1677838818769',
+      role: 'user',
+      expirationDate: null
     })
   }
 
@@ -32,8 +37,9 @@ export class BackendService {
       const user = this.users.get(name)!;
       const currentTime: number = Date.now();
       const hourMs = 60 * 60 * 1000;
-      // const hourMs = 1000;
       const expirationDate: number = currentTime + hourMs;
+      user.expirationDate = expirationDate
+      this.users.set(name, user)
       return of({
         user,
         token: `${expirationDate}.${user.role}.${user.id}`
@@ -52,8 +58,8 @@ export class BackendService {
         if(role === 'admin') {
           users.push(...Array.from(this.users.values()).reduce((accumulator, currentValue) => {
             if (currentValue.id !== id) {
-              const {name, role, creationDate} = currentValue;
-              return [...accumulator, {name, role, creationDate}];
+              const {name, role, creationDate, id} = currentValue;
+              return [...accumulator, {name, role, creationDate, id}];
             }
             return accumulator;
           }, [] as IUser[]))

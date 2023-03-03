@@ -1,2 +1,16 @@
-<p>user works!</p>
-<button (click)="logout()">LogOut</button>
+<div class="user">
+  <div class="user-card">
+    <div class="user-card-info">
+
+      <div class="name">Name: {{user!.name}}</div>
+      <div class="creation-date">Creation date: {{user!.creationDate | date: 'd/MM/YYYY'}}</div>
+      <div class="role">Role: {{user!.role}}</div>
+
+    </div>
+    <div class="user-card-actions">
+      <app-button [text]="'Logout'" (click)="logout()"></app-button>
+    </div>
+  </div>
+</div>
+
+

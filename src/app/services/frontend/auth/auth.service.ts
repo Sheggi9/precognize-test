@@ -3,6 +3,7 @@ import {IUserLoginRequest, IUserLoginResponse} from "../../../common/interfaces/
 import {catchError, Observable, of, tap} from "rxjs";
 import {BackendService} from "../../backend/backend.service";
 import {UserStoreService} from "../user/store/user-store.service";
+import {Router} from "@angular/router";
 
 
 @Injectable({
@@ -10,23 +11,23 @@ import {UserStoreService} from "../user/store/user-store.service";
 })
 export class AuthService {
 
-  constructor(private be: BackendService, private userStore: UserStoreService) { }
+  constructor(private be: BackendService, private userStoreService: UserStoreService, private router: Router) { }
 
   login (v: IUserLoginRequest): Observable<IUserLoginResponse> {
     return this.be.login(v.name).pipe(
-      catchError((err, caught) => {
-        console.log(err);
-        console.log(caught);
-        return of();
-      }),
       tap(res => {
         const {user, token} = res;
-        this.userStore.user = user
-        this.userStore.token = token
+        this.userStoreService.user = user
+        this.userStoreService.token = token
         localStorage.setItem('token', token);
       })
     )
   }
 
-  logout() {}
+  logout() {
+    localStorage.clear();
+    this.userStoreService.user = null;
+    this.userStoreService.token = null;
+    this.router.navigate(['login'])
+  }
 }

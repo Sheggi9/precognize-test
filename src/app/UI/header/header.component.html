@@ -1,0 +1,14 @@
+<div class="header">
+  <div class="nav-menu">
+    <div [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="'active'" routerLink="/admin-panel/users" class="nav-menu-item">
+      <span class="text">
+        Users
+      </span>
+    </div>
+    <div [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="'active'" *ngIf="currentProfileId" [routerLink]="['/admin-panel/users/' + currentProfileId]" class="nav-menu-item">
+      <span class="text">
+        My Profile
+      </span>
+    </div>
+  </div>
+</div>

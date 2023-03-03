@@ -1,1 +1,31 @@
-<input (keydown.enter)="loginForm.valid ? login() : false" id="name" type="text" [formControl]="loginForm">
+<div class="login">
+  <div class="login-form">
+    <label>
+      <app-input
+        (keydown.enter)="loginForm.valid ? login() : checkErrors(true)"
+        [formControlEl]="loginForm"
+        [placeholder]="'Input user name'"
+        [id]="'name'"
+        (isShowErrors)="checkErrors($event)"
+      ></app-input>
+    </label>
+    <app-button [text]="'Login'" class="btn" (click)="loginForm.valid ? login() : false"></app-button>
+  </div>
+
+  <div class="errors">
+    <ng-container *ngIf="isShowLoginError && loginForm.errors">
+      <div *ngIf="loginForm.errors['required']">
+        <pre>Is required</pre>
+      </div>
+      <div *ngIf="loginForm.errors['minlength']">
+        <pre>Minimum {{loginForm.errors['minlength']['requiredLength']}} symbols, actual is {{loginForm.errors['minlength']['actualLength']}}</pre>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="serverErrorMessage">
+      <pre>{{serverErrorMessage}}, try use Jack</pre>
+    </ng-container>
+  </div>
+
+
+</div>
+

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
-  CanActivate,
+  CanActivate, CanActivateChild,
   CanLoad,
   Route, Router,
   RouterStateSnapshot,
@@ -9,12 +9,12 @@ import {
   UrlTree
 } from '@angular/router';
 import { Observable } from 'rxjs';
-import {UserStoreService} from "../../../services/frontend/user/store/user-store.service";
+import {UserStoreService} from "@services";
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserGuardGuard implements CanLoad, CanActivate {
+export class UserGuardGuard implements CanLoad, CanActivate, CanActivateChild {
   constructor(private userStore: UserStoreService, private router: Router) {
   }
   canActivate(
@@ -27,4 +27,7 @@ export class UserGuardGuard implements CanLoad, CanActivate {
     return !!this.userStore.token ? true : this.router.navigate(['/login']);
   }
 
+  canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    return !!this.userStore.token ? true : this.router.navigate(['/login']);
+  }
 }

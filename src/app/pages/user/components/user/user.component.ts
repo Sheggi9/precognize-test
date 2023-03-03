@@ -1,28 +1,35 @@
-import { Component, OnInit } from '@angular/core';
-import {IUser} from "../../../../common/interfaces/frontend/User";
-import {UsersService} from "../../../../services/frontend/user/users.service";
-import {Router} from "@angular/router";
-import {UserStoreService} from "../../../../services/frontend/user/store/user-store.service";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Subject, takeUntil} from "rxjs";
+import {IUser} from "@interfaces";
+import {AuthService, UsersService} from "@services";
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss']
 })
-export class UserComponent implements OnInit {
-  users: IUser[] = [];
-  constructor(private usersService: UsersService, private router: Router, private userStoreService: UserStoreService) { }
+export class UserComponent implements OnInit, OnDestroy {
+  private unsubscribe$ = new Subject<null>()
+  user: IUser | undefined;
+
+  constructor(private authService: AuthService, private usersService: UsersService) { }
 
   ngOnInit(): void {
-    this.usersService.getUsers().subscribe(users => {
-      console.log(users)
-    });
+    this.usersService.getUserInfo()
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(user => {
+        this.user = user;
+      });
   }
 
   logout() {
-    localStorage.clear();
-    this.userStoreService.user = null;
-    this.userStoreService.token = null;
-    this.router.navigate(['login'])
+    this.authService.logout();
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next(null);
+    this.unsubscribe$.complete();
   }
 }
